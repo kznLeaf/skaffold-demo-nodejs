@@ -1,0 +1,16 @@
+apiVersion: skaffold/v3
+kind: Config
+metadata:
+  name: skaffoldtest
+build:
+  platforms: ["linux/amd64"]
+  artifacts:
+    - image: skaffold-buildpacks-node
+  local:
+      useBuildkit: true
+      useDockerCLI: true    
+manifests:
+  rawYaml:
+    - k8s/web.yaml
+deploy:
+  kubectl: {}
