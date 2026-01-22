@@ -14,3 +14,19 @@ manifests:
     - k8s/web.yaml
 deploy:
   kubectl: {}
+
+# 工作流图示说明：
+# Dockerfile
+#     ↓
+#     └─→ 构建容器镜像
+#          (skaffold-buildpacks-node)
+#               ↓
+#          skaffold.yaml
+#               ↓
+#               ├─→ 读取 Dockerfile 构建镜像
+#               ├─→ 读取 web.yaml 部署配置
+#               └─→ 自动化工作流（dev/deploy/build）
+#                    ↓
+#               web.yaml
+#               ↓
+#               └─→ 部署到 Kubernetes

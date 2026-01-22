@@ -1,5 +1,8 @@
+# Kubernetes 清单文件（Manifest）
+# 定义了要部署到 Kubernetes 集群中的资源配置情况
 apiVersion: v1
-kind: Service
+# 资源名称：service/web | Service 是负载均衡器，可以自动转发请求到后面的所有 Pod
+kind: Service  
 metadata:
   name: web
 spec:
@@ -15,6 +18,7 @@ kind: Deployment
 metadata:
   name: web
 spec:
+  replicas: 2 # number of pod replicas，保持2个pod实例运行
   selector:
     matchLabels:
       app: web
