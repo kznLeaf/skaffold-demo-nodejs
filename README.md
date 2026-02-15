@@ -67,7 +67,11 @@ kubectl port-forward service/web 3000:3000
 
 然后就可以在浏览器中访问：http://localhost:3000
 
-## 冗余备份
+## 冗余备份/扩缩
+
+**扩缩是通过改变 Deployment 中的副本数量来实现的**
+
+![](https://s41.ax1x.com/2026/02/14/pZLpDeK.png)
 
 当前配置可维持2个pod，每个pod运行一个容器，进行冗余备份，如果其中一个被delete,那么k8s会立即启动一个新的pod：
 
@@ -76,7 +80,7 @@ $ kubectl delete pod web-6df8b8dbcb-t44z7
 pod "web-6df8b8dbcb-t44z7" deleted from default namespace
 ```
 
-这里实际上是， skaffold 自动创建了 2 个deployment，每个deployment负责检查pod的状态，如果pod的容器终止了就立即重启:
+这里实际上是， skaffold 自动创建了 2 个deployment里面的副本，deployment负责检查pod的状态，如果pod的容器终止了就立即重启:
 
 ```bash
 $ kubectl get deployments
@@ -122,6 +126,8 @@ docker save registry.k8s.io/metrics-server/metrics-server:v0.8.0 | docker exec -
 docker exec test-control-plane crictl images | grep metrics
 docker exec test-worker crictl images | grep metrics  
 docker exec test-worker2 crictl images | grep metrics
+# 或者用下面的命令查看已经加载到集群的所有镜像
+docker exec -it ltest-control-plane crictl images
 ```
 
 然后参考[这里](https://gist.github.com/sanketsudake/a089e691286bf2189bfedf295222bd43),创建文件`kustomization.yaml`，内容如下：

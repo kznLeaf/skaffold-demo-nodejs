@@ -4,14 +4,14 @@ apiVersion: v1
 # 资源名称：service/web | Service 是负载均衡器，可以自动转发请求到后面的所有 Pod；配置为 Service 才能被外界访问
 kind: Service  
 metadata:
-  name: web
+  name: web # service 名称，必须唯一
 spec:
   ports:
-  - port: 3000
+  - port: 3000 #  Service 的虚拟 IP (ClusterIP) 上监听的端口
     name: http
   type: LoadBalancer
   selector:
-    app: web
+    app: web # 选择器，所有带有 app: web 标签的 Pod 都会被这个 Service 选中并转发请求到它们
 ---
 apiVersion: apps/v1
 kind: Deployment # Deployment 是 Pod 的管理器，负责创建和管理 Pod 的生命周期，比如在容器终止时立即重启
@@ -21,14 +21,14 @@ spec:
   replicas: 2 # number of pod replicas，保持2个pod实例运行
   selector:
     matchLabels:
-      app: web
-  template:
+      app: web # 给 Pod 打上的标签 app: web，用于被 Service 和 Deployment 识别。
+  template: # Pod 模板，定义了如果要创建一个新的 Pod 应该是什么样子的
     metadata:
       labels:
         app: web
     spec:
-      containers:
+      containers: # 定义了 Pod 中运行的容器
       - name: web
         image: skaffold-buildpacks-node
         ports:
-          - containerPort: 3000
+          - containerPort: 3000 # 容器内部监听的端口，IP是Pod的IP地址。如果创建了Service，Service会自动将请求转发到这个端口上。 kubectl expose xxx 自动暴露该端口作为端点
